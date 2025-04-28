@@ -1,0 +1,40 @@
+:root {
+    margin: 0;
+    padding: 0;
+}
+
+.card, .card-saved {
+    margin: 10px auto;
+    width: 200px;
+    padding: 10px;
+    border: 1px solid black;
+}
+
+.card-item, .card-saved-item {
+    display: flex;
+    justify-content: space-between;
+}
+
+#btn-pay {
+    width: 100%;
+    padding: 2px;
+    font-weight: bold;
+    background-color: rgb(238, 108, 72);
+}
+
+#btn-pay:hover {
+    cursor: pointer;
+    background-color: rgb(238, 77, 33);
+}
+
+#btn-saved-pay {
+    width: 100%;
+    padding: 2px;
+    font-weight: bold;
+    background-color: rgb(238, 216, 72);
+}
+
+#btn-saved-pay:hover {
+    cursor: pointer;
+    background-color: rgb(238, 207, 33);
+}

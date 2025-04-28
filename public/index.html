@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Midtrans Example</title>
+</head>
+<body>
+    <div class="card">
+        <div class="card-item">
+            <p>Rain Coat</p>
+            <p><b>Rp. 100000</b></p>
+        </div>
+        <button id="btn-pay">Pay</button>
+    </div>
+
+    <div class="card-saved" hidden>
+        <h4>Payment Saved</h4>
+        <div class="card-saved-item">
+            <p>Rain Coat</p>
+            <p><b>Rp. 100000</b></p>
+        </div>
+        <select name="card" id="choose-card"></select>
+        <button id="btn-saved-pay">Pay</button>
+    </div>
+
+
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="SB-Mid-client-O1v_TcF64FXQMYqj"></script>
+    <script>
+        const chooseCard = document.getElementById("choose-card");
+        chooseCard.style.marginBottom = "5px";
+        chooseCard.style.padding = "5px";
+        chooseCard.style.width = "100%"
+
+        document.getElementById('btn-pay').onclick = function () {
+            fetch("http://localhost:3000/get-snap-token", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(res => res.json())
+            .then(data => {
+                snap.pay(data.token, {
+                    onSuccess: function(result) {
+                        alert('Pembayaran berhasil!');
+                    }
+                })
+            });
+        }
+
+        document.getElementById('btn-saved-pay').onclick = function () {
+            fetch("http://localhost:3000/saved-card/charge", {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    card_id: chooseCard.value
+                })
+            })
+            .then(res => res.json())
+            .then(data => console.log(data));
+        }
+
+        window.addEventListener('DOMContentLoaded', async (event) => {
+            const cardSavedEl = document.querySelector(".card-saved");
+
+            fetch("http://localhost:3000/get-saved-card")
+            .then(res => res.json())
+            .then(data => {
+                if (data.length != 0) {
+                    cardSavedEl.hidden = false;
+                    data.map((d) => {
+                        const option = document.createElement('option');
+                        option.value = d.id;
+                        option.text = d.masked_card;
+                        chooseCard.appendChild(option);
+                    })
+                } else {
+                    cardSavedEl.hidden = true;
+                }
+            })
+            .catch(e => console.error(e));
+        })
+    </script>
+</body>
+</html>
